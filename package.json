@@ -43,6 +43,7 @@
     "express": "^4.17.3",
     "express-handlebars": "^6.0.3",
     "express-session": "^1.17.2",
+    "fs.promises": "^0.1.2",
     "helmet": "^5.0.2",
     "mongoose": "^6.2.7",
     "redis": "^4.0.4",
