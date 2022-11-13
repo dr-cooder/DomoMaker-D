@@ -37,8 +37,23 @@ const getDomos = (req, res) => Domo.findByOwner(req.session.account._id, (err, d
   return res.json({ domos: docs });
 });
 
+const deleteDomo = async (req, res) => {
+  const { id } = req.body;
+  if (!id) {
+    return res.status(400).json({ error: 'No ID provided for Domo to delete!' });
+  }
+
+  // https://stackoverflow.com/questions/27482806/check-if-id-exists-in-a-collection-with-mongoose
+  const count = await Domo.countDocuments({ _id: id });
+  if (count === 0) return res.status(400).json({ error: `No Domo with ID of ${id} exists!` });
+
+  await Domo.findByIdAndDelete(id);
+  return res.status(200).json({ message: `Domo with ID of ${id} deleted!` });
+};
+
 module.exports = {
   makerPage,
   makeDomo,
   getDomos,
+  deleteDomo,
 };

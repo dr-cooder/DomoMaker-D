@@ -4,19 +4,32 @@ const handleDomo = (e) => {
   e.preventDefault();
   helper.hideError();
 
-  const name = e.target.querySelector('#domoName').value;
-  const age = e.target.querySelector('#domoAge').value;
-  const _csrf = e.target.querySelector('#_csrf').value;
+  const nameEl = e.target.querySelector('#domoName');
+  const ageEl = e.target.querySelector('#domoAge');
+  const _csrfEl = e.target.querySelector('#_csrf');
+
+  const name = nameEl.value;
+  const age = ageEl.value;
+  const _csrf = _csrfEl.value;
 
   if (!name || !age) {
     helper.handleError('All fields are required');
     return false;
   }
 
-  helper.sendPost(e.target.action, { name, age, _csrf }, loadDomosFromServer);
+  helper.sendPost(e.target.action, { name, age, _csrf }, () => loadDomosFromServer(_csrf));
+
+  nameEl.value = '';
+  ageEl.value = '';
 
   return false;
 };
+
+const requestDeleteDomo = (e) => {
+  helper.hideError();
+
+  helper.sendPost('/delete', e, () => loadDomosFromServer(e._csrf));
+}
 
 const DomoForm = (props) => {
   return (
@@ -50,8 +63,18 @@ const DomoList = (props) => {
     return (
       <div key={domo._id} className="domo">
         <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-        <h3 className="domoName">Name: {domo.name} </h3>
-        <h3 className="domoAge">Age: {domo.age} </h3>
+        <div className="domoDescription">
+          <div className="domoDescriptionLine">
+            <h3 className="domoName">Name: {domo.name} </h3>
+            <h3 className="domoAge">Age: {domo.age} </h3>
+          </div>
+          <div className="domoDescriptionLine">
+            <h3 className="domoFavColor">Fav. Color: <span className="domoFavColorCircle">
+                <div className="domoFavColorCircleSpacer"></div>
+            </span></h3>
+            <button className="domoDelete" onClick={() => requestDeleteDomo({ _csrf: props.csrf, id: domo._id })}>Delete</button>
+          </div>
+        </div>
       </div>
     );
   });
@@ -63,12 +86,12 @@ const DomoList = (props) => {
   );
 }
 
-const loadDomosFromServer = async (e) => {
+const loadDomosFromServer = async (_csrf) => {
   const response = await fetch('/getDomos');
   const data = await response.json();
 
   ReactDOM.render(
-    <DomoList domos={data.domos} />,
+    <DomoList csrf={_csrf} domos={data.domos} />,
     document.getElementById('domos')
   );
 }
@@ -76,18 +99,19 @@ const loadDomosFromServer = async (e) => {
 const init = async () => {
   const response = await fetch('/getToken');
   const data = await response.json();
+  const _csrf = data.csrfToken;
 
   ReactDOM.render(
-    <DomoForm csrf={data.csrfToken} />,
+    <DomoForm csrf={_csrf} />,
     document.getElementById('makeDomo')
   );
 
   ReactDOM.render(
-    <DomoList domos={[]} />,
+    <DomoList csrf={_csrf} domos={[]} />,
     document.getElementById('domos')
   );
 
-  loadDomosFromServer();
+  loadDomosFromServer(_csrf);
 }
 
 window.onload = init;

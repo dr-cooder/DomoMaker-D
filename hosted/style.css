@@ -71,7 +71,7 @@ nav:nth-child(1) {
     float:left;
 }
 
-.makeDomoSubmit {
+.makeDomoSubmit, button.domoDelete {
     transition: background-color 0.4s ease;
     display: inline;
     width: 90px;
@@ -85,7 +85,7 @@ nav:nth-child(1) {
     color: white;
 }
 
-.makeDomoSubmit:hover {
+.makeDomoSubmit:hover, button.domoDelete:hover {
     transition: background-color 0.4s ease;
     background-color: #338acc;
 }
@@ -212,6 +212,24 @@ nav:nth-child(1) {
     padding: 10px;
     min-height:60px;
     overflow: hidden;
+    display: flex;
+}
+
+.domoDescription {
+    display: flex;
+    flex-direction: column;
+    margin: 1.5em 0;
+    gap: 1.5em;
+    flex-grow: 1;
+}
+
+.domoDescriptionLine {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 1.5em;
+    padding-left: 65px;
+    padding-right: 40px;
 }
 
 .domo:hover {
@@ -228,7 +246,6 @@ img.domoFace {
     width: 50px;
     border-radius: 4px;
     margin-top:10px;
-    float:left;
 }
 
 h3.emptyDomo {
@@ -239,21 +256,36 @@ h3.emptyDomo {
     margin-top: 18px;
 }
 
-h3.domoName {
-    float:left;
+h3.domoName, h3.domoFavColor {
     width: 200px;
     font-weight: bold;
-    padding-left: 65px;
     font-size: 1.5em;
+    margin: 0;
 }
 
 h3.domoAge {
-    float:right;
     text-align: left;
     width: 100px;
     font-weight: bold;
-    padding-right: 40px;
     font-size: 1.5em;
+    margin: 0;
+}
+
+span.domoFavColorCircle {
+    background-color: red;
+    border-radius: 13px;
+}
+
+div.domoFavColorCircleSpacer {
+    display: inline-block;
+    width: 26px;
+}
+
+button.domoDelete {
+    width: 100px;
+    font-size: 1em;
+    font-weight: bold;
+    color: red;
 }
 
 .domo:first-child {
