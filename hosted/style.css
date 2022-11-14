@@ -50,7 +50,8 @@ nav:nth-child(1) {
 .domoForm {
     border: 2px solid #338acc;
     height: 35px;
-    width: 700px;
+    display: flex;
+    align-items: flex-start;
     margin-top:0px;
     padding-top:10px;
     background-color: #55acee;
@@ -59,8 +60,7 @@ nav:nth-child(1) {
 }
 
 .domoForm label {
-    display: inline-block;
-    width: 75px;
+    min-width: 75px;
     margin-left: 10px;
     font-size: 1.2em;
     float: left;
@@ -79,6 +79,10 @@ nav:nth-child(1) {
     border-radius: 2px;
     color: white;
     text-decoration: none;
+}
+
+.makeDomoSubmit {
+    margin-left: 10px;
 }
 
 .makeDomoSubmit:link, .makeDomoSubmit:visited, .makeDomoSubmit:hover, .makeDomoSubmit:active {
@@ -272,8 +276,8 @@ h3.domoAge {
 }
 
 span.domoFavColorCircle {
-    background-color: red;
     border-radius: 13px;
+    margin-left: 0.25em;
 }
 
 div.domoFavColorCircleSpacer {
@@ -286,6 +290,7 @@ button.domoDelete {
     font-size: 1em;
     font-weight: bold;
     color: red;
+    margin-left: auto;
 }
 
 .domo:first-child {

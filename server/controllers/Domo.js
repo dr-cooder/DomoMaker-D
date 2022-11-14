@@ -9,16 +9,27 @@ const makeDomo = async (req, res) => {
     return res.status(400).json({ error: 'Both name and age are required!' });
   }
 
+  // VALIDATE COLOR HERE
+  const { favColor } = req.body;
+  if (favColor && !/^#[0-9a-f]{6}$/.test(favColor)) {
+    return res.status(400).json({ error: `Invalid favorite color value: ${favColor}` });
+  }
+
   const domoData = {
     name: req.body.name,
     age: req.body.age,
+    favColor,
     owner: req.session.account._id,
   };
 
   try {
     const newDomo = new Domo(domoData);
     await newDomo.save();
-    return res.status(201).json({ name: newDomo.name, age: newDomo.age });
+    return res.status(201).json({
+      name: newDomo.name,
+      age: newDomo.age,
+      favColor: newDomo.favColor,
+    });
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {

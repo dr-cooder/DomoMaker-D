@@ -15,7 +15,15 @@ const DomoSchema = new mongoose.Schema({
   age: {
     type: Number,
     min: 0,
-    require: true,
+    required: true,
+  },
+  favColor: {
+    type: String,
+    validate: {
+      validator: (e) => !e || /^#[0-9a-f]{6}$/.test(e),
+      message: 'favColor must be falsy or in lowercase hex format!',
+    },
+    default: undefined,
   },
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -31,6 +39,7 @@ const DomoSchema = new mongoose.Schema({
 DomoSchema.statics.toAPI = (doc) => ({
   name: doc.name,
   age: doc.age,
+  favColor: doc.favColor,
 });
 
 DomoSchema.statics.findByOwner = (ownerId, callback) => {
@@ -38,7 +47,7 @@ DomoSchema.statics.findByOwner = (ownerId, callback) => {
     owner: mongoose.Types.ObjectId(ownerId),
   };
 
-  return DomoModel.find(search).select('name age').lean().exec(callback);
+  return DomoModel.find(search).select('name age favColor').lean().exec(callback);
 };
 
 DomoModel = mongoose.model('Domo', DomoSchema);

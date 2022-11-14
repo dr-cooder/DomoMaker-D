@@ -30,7 +30,18 @@ const redisClient = redis.createClient({
   legacyMode: true,
   url: redisURL,
 });
-redisClient.connect().catch(console.error);
+
+const attemptRedisConnect = () => {
+  redisClient.connect().catch((e) => {
+    if (e.message === 'Connection timeout') {
+      console.log('Retrying...');
+      attemptRedisConnect();
+    } else {
+      console.error(e);
+    }
+  });
+};
+attemptRedisConnect();
 
 const app = express();
 

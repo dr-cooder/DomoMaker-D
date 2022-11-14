@@ -6,10 +6,14 @@ const handleDomo = (e) => {
 
   const nameEl = e.target.querySelector('#domoName');
   const ageEl = e.target.querySelector('#domoAge');
+  const hasFavColorEl = e.target.querySelector('#domoHasFavColor');
+  const favColorEl = e.target.querySelector('#domoFavColor');
   const _csrfEl = e.target.querySelector('#_csrf');
 
   const name = nameEl.value;
   const age = ageEl.value;
+  const hasFavColor = hasFavColorEl.checked;
+  const favColor = favColorEl.value;
   const _csrf = _csrfEl.value;
 
   if (!name || !age) {
@@ -17,10 +21,10 @@ const handleDomo = (e) => {
     return false;
   }
 
-  helper.sendPost(e.target.action, { name, age, _csrf }, () => loadDomosFromServer(_csrf));
+  const data = { name, age, _csrf }
+  if (hasFavColor) data.favColor = favColor;
 
-  nameEl.value = '';
-  ageEl.value = '';
+  helper.sendPost(e.target.action, data, () => loadDomosFromServer(_csrf));
 
   return false;
 };
@@ -32,6 +36,9 @@ const requestDeleteDomo = (e) => {
 }
 
 const DomoForm = (props) => {
+  const [hasFavColor, setHasFavColor] = React.useState(false);
+  const [favColor, setFavColor] = React.useState('#ff0000');
+    
   return (
     <form id="domoForm"
       onSubmit={handleDomo}
@@ -44,6 +51,12 @@ const DomoForm = (props) => {
       <input id="domoName" type="text" name="name" placeholder="Domo Name" />
       <label htmlFor="age">Age: </label>
       <input id="domoAge" type="number" min="0" name="age" />
+      <label htmlFor="hasFavColor">Favorite Color? </label>
+      <input id="domoHasFavColor" type="checkbox" name="hasFavColor"
+        checked={hasFavColor} onChange={(e) => setHasFavColor(e.target.checked)} />
+      <input id="domoFavColor" type="color"
+        value={favColor} onChange={(e) => setFavColor(e.target.value)}
+        style={{display: (hasFavColor ? 'block' : 'none')}} />
       <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
       <input className="makeDomoSubmit" type="submit" value="Make Domo" />
     </form>
@@ -69,9 +82,12 @@ const DomoList = (props) => {
             <h3 className="domoAge">Age: {domo.age} </h3>
           </div>
           <div className="domoDescriptionLine">
-            <h3 className="domoFavColor">Fav. Color: <span className="domoFavColorCircle">
-                <div className="domoFavColorCircleSpacer"></div>
-            </span></h3>
+            {domo.favColor && <h3 className="domoFavColor">
+              Fav. Color:
+              <span className="domoFavColorCircle" style={{ backgroundColor: domo.favColor }}>
+                  <div className="domoFavColorCircleSpacer"></div>
+              </span>
+            </h3>}
             <button className="domoDelete" onClick={() => requestDeleteDomo({ _csrf: props.csrf, id: domo._id })}>Delete</button>
           </div>
         </div>
