@@ -31,17 +31,18 @@ const redisClient = redis.createClient({
   url: redisURL,
 });
 
-const attemptRedisConnect = () => {
-  redisClient.connect().catch((e) => {
-    if (e.message === 'Connection timeout') {
-      console.log('Retrying...');
-      attemptRedisConnect();
-    } else {
-      console.error(e);
-    }
-  });
-};
-attemptRedisConnect();
+// const attemptRedisConnect = () => {
+//   redisClient.connect().catch((e) => {
+//     if (e.message === 'Connection timeout') {
+//       console.log('Retrying...');
+//       attemptRedisConnect();
+//     } else {
+//       console.error(e);
+//     }
+//   });
+// };
+// attemptRedisConnect();
+redisClient.connect().catch(console.error);
 
 const app = express();
 
