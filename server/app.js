@@ -31,19 +31,6 @@ const redisClient = redis.createClient({
   url: redisURL,
 });
 
-// const attemptRedisConnect = () => {
-//   redisClient.connect().catch((e) => {
-//     if (e.message === 'Connection timeout') {
-//       console.log('Retrying...');
-//       attemptRedisConnect();
-//     } else {
-//       console.error(e);
-//     }
-//   });
-// };
-// attemptRedisConnect();
-redisClient.connect().catch(console.error);
-
 const app = express();
 
 app.use(helmet({
@@ -85,7 +72,22 @@ app.use((err, req, res, next) => {
 
 router(app);
 
-app.listen(port, (err) => {
-  if (err) { throw err; }
-  console.log(`Listening on port ${port}`);
-});
+redisClient.connect().then(() => {
+  app.use(session({
+    key: 'sessionid',
+    store: new RedisStore({
+      client: redisClient,
+    }),
+    secret: 'Domo Arigato',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+    },
+  }));
+
+  app.listen(port, (err) => {
+    if (err) { throw err; }
+    console.log(`Listening on port ${port}`);
+  });
+}).catch(console.error);
